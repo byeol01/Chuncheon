@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import CommonHeader from '../components/CommonHeader';
 
 // 문의글 타입 정의
 interface ContactPost {
@@ -18,7 +17,7 @@ interface ContactPost {
 const PageContainer = styled.div`
   min-height: 100vh;
   background: #F2F4F8;
-  padding: 20px;
+  padding: 80px 20px 20px 20px; /* 상단 패딩 추가 */
   font-family: 'Noto Sans KR', sans-serif;
 `;
 
@@ -702,7 +701,7 @@ const ContactPage: React.FC = () => {
   return (
     <PageContainer>
       <ContentWrapper>
-        <CommonHeader onSettingsClick={() => setIsSettingsOpen(true)} />
+        {/* CommonHeader 제거 */}
         
         <PageHeader>
           <h1>문의하기</h1>

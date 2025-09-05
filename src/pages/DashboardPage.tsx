@@ -1,16 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import Navigation from '../components/Navigation';
-import WaterQualityIndex from '../components/Index';
-import WaterQualityParameters from '../components/Parameters';
-import PastWater from '../components/PastWater';
-import { WaterQualityData, WaterQualityLevel } from '../types/waterQuality';
-import { getCurrentWaterQualityData } from '../data/mockData';
+import { StatusText, Description, getLevelText } from '../components/TourismIndex'; // TourismIndex에서 내보낸 컴포넌트 임포트
+import TourismParameters from '../components/TourismParameters'; 
+import TouristSpotSection from '../components/TouristSpotSection';
+import WaterQualityIcon from '../components/Icons'; // 아이콘 컴포넌트 임포트
 
 const PageContainer = styled.div`
   min-height: 100vh;
   background: #F2F4F8;
-  padding: 20px;
+  padding: 80px 20px 20px 20px; /* 상단 패딩 추가 */
   font-family: 'Noto Sans KR', sans-serif;
 `;
 
@@ -18,149 +17,7 @@ const ContentWrapper = styled.div`
   width: 100%;
   max-width: 1440px;
   margin: 0 auto;
-`;
-
-// 상단 헤더 - 로고, 네비게이션, 설정 아이콘을 포함
-const TopHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  padding: 15px 20px;
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 15px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(10px);
-`;
-
-// 로고 섹션
-const LogoSection = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  
-  &:hover {
-    transform: scale(1.05);
-  }
-  
-  .logo {
-    width: 40px;
-    height: 40px;
-    object-fit: contain;
-  }
-`;
-
-// 네비게이션 섹션
-const NavigationSection = styled.div`
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  margin: 0 20px;
-`;
-
-const SettingsSection = styled.div`
-  .settings-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 8px;
-    border-radius: 50%;
-    transition: all 0.3s ease;
-    
-    img {
-      width: 24px;
-      height: 24px;
-    }
-    
-    &:hover {
-      background: #f0f0f0;
-    }
-  }
-`;
-
-const Header = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30px;
-  padding: 20px;
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 15px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(10px);
-`;
-
-const LocationInfo = styled.div`
-  h1 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: #333;
-    margin: 0 0 5px 0;
-  }
-  p {
-    font-size: 1rem;
-    color: #666;
-    margin: 0;
-    text-align: left;
-  }
-`;
-
-const SearchSection = styled.div`
-  flex: 1;
-  max-width: 400px;
-  margin: 0 20px;
-  position: relative;
-  
-  .search-input {
-    width: 100%;
-    padding: 12px 45px 12px 15px;
-    border: 2px solid #e0e0e0;
-    border-radius: 25px;
-    font-size: 14px;
-    outline: none;
-    transition: border-color 0.3s ease;
-    
-    &:focus {
-      border-color: #007bff;
-    }
-  }
-  
-  .search-icon {
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 20px;
-    height: 20px;
-    cursor: pointer;
-    opacity: 0.7;
-    transition: opacity 0.3s ease;
-    
-    &:hover {
-      opacity: 1;
-    }
-  }
-`;
-
-const WeatherSection = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  
-  .weather-main {
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 5px;
-  }
-  
-  .weather-details {
-    font-size: 0.9rem;
-    color: #666;
-    text-align: right;
-  }
+  margin-top: 20px;
 `;
 
 const MainContent = styled.div`
@@ -171,14 +28,16 @@ const MainContent = styled.div`
   width: 100%;
 `;
 
-const LeftPanel = styled.div<{ $level: WaterQualityLevel }>`
+const LeftPanel = styled.div<{ $level?: number }>` // $level 타입을 일반 숫자로 변경
   background: rgba(255, 255, 255, 0.9);
   border-radius: 20px;
-  padding: 30px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(10px);
   width: 500px;
-  height: 330px;
+  height: 400px;
+  display: flex; /* flex 컨테이너로 변경 */
+  flex-direction: column; /* 세로 방향 정렬 */
+  padding: 30px; /* 모든 방향 패딩 통일 */
   position: relative;
   
   &::before {
@@ -295,203 +154,133 @@ const NewsSection = styled.div`
   }
 `;
 
+const DateButtonContainer = styled.div`
+  display: flex;
+  gap: 10px;
+  margin-top: 15px; /* 관광지수 텍스트 아래에 배치 */
+  margin-bottom: 20px; /* 메인 콘텐츠와의 간격 */
+  align-self: flex-start; /* LeftPanel의 왼쪽 정렬 */
+`;
+
+const DateButton = styled.button<{ $isActive: boolean }>`
+  padding: 10px 20px;
+  border-radius: 20px;
+  border: 1px solid ${props => (props.$isActive ? '#007bff' : '#ccc')};
+  background-color: ${props => (props.$isActive ? '#007bff' : '#fff')};
+  color: ${props => (props.$isActive ? '#fff' : '#333')};
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: ${props => (props.$isActive ? '#0056b3' : '#f0f0f0')};
+    color: ${props => (props.$isActive ? '#fff' : '#000')};
+  }
+`;
+
+const TourismTitle = styled.h2` /* 관광지수 텍스트를 위한 새로운 styled component */
+  font-size: 1.8rem;
+  color: #333;
+  font-weight: 600;
+  margin: 0; /* 기본 margin 제거 */
+  align-self: flex-start; /* LeftPanel의 왼쪽 정렬 */
+`;
+
+const MainContentCenter = styled.div` /* 아이콘과 설명을 중앙에 배치하기 위한 컨테이너 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1; /* 남은 공간을 채우도록 */
+  padding-top: 0; /* 더 이상 필요 없음 */
+`;
+
+interface TourismData {
+  comfort: number;
+  climateTemp: number;
+  waterQuality: number;
+  level: number;
+  status: string;
+  description: string;
+}
+
+const mockTourismDataToday: TourismData = {
+  comfort: 85,
+  climateTemp: 25,
+  waterQuality: 90,
+  level: 1, // 우수
+  status: '우수',
+  description: '오늘은 춘천 관광하기에 매우 쾌적하고 물 관련 활동도 좋습니다.',
+};
+
+const mockTourismDataTomorrow: TourismData = {
+  comfort: 70,
+  climateTemp: 27,
+  waterQuality: 75,
+  level: 3, // 보통
+  status: '보통',
+  description: '내일은 기온이 약간 오르고, 전반적인 관광 활동에 보통 수준의 쾌적함이 예상됩니다.',
+};
+
 const DashboardPage: React.FC = () => {
-  // 통합된 수질 데이터 생성 (모든 컴포넌트에 동일하게 전달)
-  const [integratedData] = React.useState(() => {
-    // 고정된 테스트 데이터 생성 - "주의" 상태로 통일
-    const baseData: WaterQualityData = {
-      turbidity: 35.0, // 탁도 - 위험 수준
-      algae: 35000, // 조류 - 위험 수준
-      dissolvedOxygen: 3.2, // 용존산소량 - 위험 수준
-      ph: 7.2, // pH
-      level: 4 as WaterQualityLevel, // 수질 레벨 (주의)
-      status: '주의',
-      timestamp: new Date()
-    };
-    
-    // 과거 데이터도 동일한 기준으로 생성
-    const today = new Date();
-    const pastData = [];
-    
-    for (let i = -3; i <= 3; i++) {
-      const date = new Date(today);
-      date.setDate(today.getDate() + i);
-      
-      // 오늘 데이터는 baseData와 동일하게 "주의" 상태
-      if (i === 0) {
-        pastData.push({
-          date: date.toISOString().split('T')[0],
-          label: '오늘',
-          isToday: true,
-          status: '주의', // 오늘은 "주의" 상태로 통일
-          iconPath: '/경고.png', // 경고 아이콘 사용
-          data: {
-            turbidity: baseData.turbidity,
-            algae: baseData.algae,
-            dissolvedOxygen: baseData.dissolvedOxygen,
-            temperature: 26.0,
-            ph: baseData.ph,
-            conductivity: 250
-          },
-          weather: {
-            temperature: 23,
-            humidity: 65,
-            rainfall: 0,
-            windSpeed: 5,
-            pressure: 1013
-          },
-          prediction: {
-            confidence: 85,
-            trend: 'stable',
-            factors: ['기상 조건', '계절성 변화']
-          }
-        });
-      } else {
-        // 과거/미래 데이터는 다른 상태로 설정
-        let status, iconPath;
-        if (i < 0) {
-          // 과거 데이터는 더 좋은 상태
-          if (i === -3) {
-            status = '우수';
-            iconPath = '/매우안전.png';
-          } else if (i === -2) {
-            status = '양호';
-            iconPath = '/안전.png';
-          } else {
-            status = '보통';
-            iconPath = '/주의.png';
-          }
-        } else {
-          // 미래 데이터는 더 나쁜 상태
-          if (i === 1) {
-            status = '주의';
-            iconPath = '/경고.png';
-          } else if (i === 2) {
-            status = '불량';
-            iconPath = '/위험.png';
-          } else {
-            status = '불량';
-            iconPath = '/위험.png';
-          }
-        }
-        
-        pastData.push({
-          date: date.toISOString().split('T')[0],
-          label: i < 0 ? date.toLocaleDateString('ko-KR', { month: 'numeric', day: 'numeric' }) : date.toLocaleDateString('ko-KR', { month: 'numeric', day: 'numeric' }),
-          isToday: false,
-          status: status,
-          iconPath: iconPath,
-          data: {
-            turbidity: baseData.turbidity * (1 + (Math.random() - 0.5) * 0.2),
-            algae: baseData.algae * (1 + (Math.random() - 0.5) * 0.2),
-            dissolvedOxygen: baseData.dissolvedOxygen * (1 + (Math.random() - 0.5) * 0.2),
-            temperature: 26.0 + (Math.random() - 0.5) * 2,
-            ph: baseData.ph + (Math.random() - 0.5) * 0.1,
-            conductivity: 250 + (Math.random() - 0.5) * 20
-          },
-          weather: {
-            temperature: 23 + (Math.random() - 0.5) * 4,
-            humidity: 65 + (Math.random() - 0.5) * 10,
-            rainfall: Math.random() * 10,
-            windSpeed: 5 + Math.random() * 3,
-            pressure: 1013 + (Math.random() - 0.5) * 10
-          },
-          prediction: {
-            confidence: 85 + Math.random() * 10,
-            trend: i < 0 ? 'improving' : i > 0 ? 'worsening' : 'stable',
-            factors: ['기상 조건', '계절성 변화']
-          }
-        });
-      }
-    }
-    
-    return {
-      current: baseData,
-      past: pastData
-    };
-  });
+  const [isToday, setIsToday] = useState(true);
+  const currentTourismData = isToday ? mockTourismDataToday : mockTourismDataTomorrow;
 
   const newsData = [
     {
       id: 1,
-      title: "2025 춘천시 데이터 활용 해커톤 대회",
+      title: "춘천시, 환경 보호 캠페인 시작",
     },
     {
       id: 2,
-      title: "춘천시, 여름철 조류 확산에도 수돗물 안전 지켰다",
+      title: "의암호 수질 개선 사업 추진",
     },
     {
       id: 3,
-      title: "춘천시, 춘천사랑상품권 할인율 13%로 대폭 확대",
+      title: "춘천 환경 사랑 시민 참여 유도",
     }
   ];
 
   const handleMoreNews = () => {
-    // 여기에 더보기 페이지로 이동하는 로직을 추가할 수 있습니다
-    alert('더보기 페이지로 이동합니다.');
-  };
-
-  // 로고 클릭 핸들러 - 메인화면으로 이동
-  const handleLogoClick = () => {
-    window.location.href = '/';
+    alert('춘천환경소식지 페이지로 이동합니다.');
+    // navigate('/news'); // React Router DOM 사용 시
   };
 
   return (
     <PageContainer>
       <ContentWrapper>
-        <TopHeader>
-          <LogoSection onClick={handleLogoClick}>
-            <img src="/logo2.png" alt="로고" className="logo" />
-          </LogoSection>
-          
-          <NavigationSection>
             <Navigation />
-          </NavigationSection>
-          
-          <SettingsSection>
-            <button className="settings-btn">
-              <img src="/설정.png" alt="설정" />
-            </button>
-          </SettingsSection>
-        </TopHeader>
-
-        <Header>
-          <LocationInfo>
-            <h1>강원특별자치도 춘천시</h1>
-            <p>의암호 기준</p>
-          </LocationInfo>
-          
-          <SearchSection>
-            <input 
-              type="text" 
-              className="search-input" 
-              placeholder="춘천"
-              defaultValue="춘천"
-            />
-            <img src="/돋보기.png" alt="검색" className="search-icon" />
-          </SearchSection>
-          
-          <WeatherSection>
-            <div className="weather-main">23°C</div>
-            <div className="weather-details">맑음 • 습도 65%</div>
-          </WeatherSection>
-        </Header>
 
         <MainContent>
-          <LeftPanel $level={integratedData.current.level}>
-            <WaterQualityIndex data={integratedData.current} />
+          <LeftPanel $level={currentTourismData.level}>
+            <TourismTitle>관광지수</TourismTitle> 
+            <DateButtonContainer> 
+              <DateButton $isActive={isToday} onClick={() => setIsToday(true)}>오늘</DateButton>
+              <DateButton $isActive={!isToday} onClick={() => setIsToday(false)}>내일</DateButton>
+            </DateButtonContainer>
+            
+            <MainContentCenter>
+              <WaterQualityIcon level={currentTourismData.level} size={100} /> {/* 아이콘 이미지 */}
+              <StatusText $level={currentTourismData.level}>
+                {getLevelText(currentTourismData.level)}
+              </StatusText>
+              <Description>
+                {currentTourismData.description}
+              </Description>
+            </MainContentCenter>
+
           </LeftPanel>
           
           <RightPanel>
-            <WaterQualityParameters data={integratedData.current} />
+            <TourismParameters data={currentTourismData} />
           </RightPanel>
         </MainContent>
 
         <BottomContent>
-          <PastWater data={integratedData.past} />
+          <TouristSpotSection />
           <NewsSection>
             <div className="news-header">
-              <h3>춘천시 소식지</h3>
+              <h3>춘천환경소식지</h3>
               <button className="more-btn" onClick={handleMoreNews}>
                 더보기
               </button>

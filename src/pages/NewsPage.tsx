@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import CommonHeader from '../components/CommonHeader';
 
 const PageContainer = styled.div`
   min-height: 100vh;
   background: #F2F4F8;
-  padding: 20px;
+  padding: 80px 20px 20px 20px; /* 상단 패딩 추가 */
   font-family: 'Noto Sans KR', sans-serif;
 `;
 
@@ -367,11 +366,11 @@ const NewsPage: React.FC = () => {
   return (
     <PageContainer>
       <ContentWrapper>
-        <CommonHeader onSettingsClick={() => setIsSettingsOpen(true)} />
+        {/* CommonHeader 제거 */}
         
         <PageHeader>
-          <h1>춘천시 소식지</h1>
-          <p>춘천시의 최신 소식과 주요 정책을 확인하세요</p>
+          <h1>춘천환경소식지</h1>
+          <p>춘천시의 최신 환경 소식과 주요 정책을 확인하세요</p>
         </PageHeader>
 
         <NewsGrid>
