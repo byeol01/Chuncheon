@@ -108,6 +108,103 @@ const HighlightText = styled.p`
   border-left: 5px solid #007bff;
 `;
 
+const FormulaContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 30px 0;
+  padding: 25px;
+  background: #f0f8ff; /* 연한 파란색 배경 */
+  border-radius: 15px;
+  border: 1px solid #d0e8ff;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+`;
+
+const FormulaBox = styled.div`
+  background: #e3f2fd;
+  color: #1a237e;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 1.5rem;
+  font-weight: 600;
+  padding: 15px 30px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #90caf9;
+`;
+
+const VariableList = styled.div`
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px 20px;
+  font-size: 1rem;
+  color: #424242;
+  text-align: left;
+  width: 100%;
+  max-width: 500px;
+
+  strong {
+    color: #0d47a1;
+    font-weight: 600;
+  }
+`;
+
+const VariableItem = styled.div`
+  display: contents;
+`;
+
+const ProcessFlow = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin: 30px 0;
+  flex-wrap: wrap;
+
+  .step {
+    background: #ffffff;
+    padding: 15px 25px;
+    border-radius: 25px;
+    border: 1px solid #b3e5fc;
+    color: #01579b;
+    font-weight: 600;
+    font-size: 1.1rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    white-space: nowrap;
+  }
+
+  .arrow {
+    font-size: 1.5rem;
+    color: #007bff;
+    font-weight: bold;
+  }
+`;
+
+const ReferenceSection = styled.div`
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px dashed #e0e0e0;
+
+  h3 {
+    font-size: 1.6rem;
+    color: #0d47a1;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+`;
+
+const ReferenceItem = styled.p`
+  font-size: 0.95rem;
+  color: #666;
+  margin-bottom: 10px;
+  line-height: 1.5;
+  text-indent: -20px;
+  padding-left: 20px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+`;
+
 const FeatureGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -204,17 +301,81 @@ const MiriCPage: React.FC = () => {
           <ContentBlock>
             <p>
               MIRI-C는 <strong>IoT 기반의 수질 센서 네트워크</strong>를 통해 춘천시 전역의 주요
-              하천과 호수에서 실시간으로 수질 데이터를 수집합니다. 수집된 데이터는
-              <strong>빅데이터 분석 시스템</strong>을 통해 정제되고, <strong>AI 기반의 예측 모델</strong>을 활용하여
-              관광객의 활동에 영향을 미칠 수 있는 수질 변화 및 환경 위험 요소를
-              정확하게 분석하고 예측합니다. 이러한 정교한 데이터 산출 과정을 통해
-              MIRI-C는 신뢰할 수 있는 관광환경지수를 제공하며, 춘천시의 환경 관리
-              역량을 한층 더 강화합니다.
-            </p>
-            <p>
-              주요 분석 지표: 수온, pH, 용존산소, 탁도, 전기전도도, 클로로필-a 등
+              하천과 호수에서 실시간으로 수질 데이터를 수집하고 분석합니다. 
+              이러한 데이터는 관광객의 활동에 영향을 미칠 수 있는 환경 요소를 정확하게 분석하고 예측하는 데 활용됩니다.
             </p>
           </ContentBlock>
+
+          <h3 style={{ fontSize: '1.6rem', color: '#0d47a1', marginBottom: '20px', textAlign: 'center', marginTop: '40px' }}>
+            관광환경지수(TEI) 산출 모델
+          </h3>
+
+          <FormulaContainer>
+            <p style={{ fontSize: '1.2rem', color: '#1976d2', marginBottom: '20px', textAlign: 'center' }}>
+              기존의 <strong>“관광기후지수 (TCI, Tourism Climate Index)”</strong>에는 수질 정보가 포함되지 않음
+            </p>
+            <FormulaBox>TCI = 2(4Cd + Ca + 2P + W + 2S)</FormulaBox>
+            <VariableList>
+              <VariableItem><strong>Cd:</strong></VariableItem><VariableItem>낮 열쾌적성 (기온, 습도)</VariableItem>
+              <VariableItem><strong>Ca:</strong></VariableItem><VariableItem>일일 열 쾌적성 (기온, 습도)</VariableItem>
+              <VariableItem><strong>P:</strong></VariableItem><VariableItem>강수량</VariableItem>
+              <VariableItem><strong>W:</strong></VariableItem><VariableItem>일조량</VariableItem>
+              <VariableItem><strong>S:</strong></VariableItem><VariableItem>풍속</VariableItem>
+            </VariableList>
+          </FormulaContainer>
+
+          <ProcessFlow>
+            <span className="step">수질 데이터</span>
+            <span className="arrow">▼</span>
+            <span className="step">포함</span>
+          </ProcessFlow>
+
+          <FormulaContainer>
+            <p style={{ fontSize: '1.2rem', color: '#1976d2', marginBottom: '20px', textAlign: 'center' }}>
+              새로운 <strong>“관광환경지수 (TEI, Tourism Environmental Index)”</strong> 개발
+            </p>
+            <FormulaBox>TEI = TCI + 2R</FormulaBox>
+            <VariableList>
+              <VariableItem><strong>R:</strong></VariableItem><VariableItem>수질지수</VariableItem>
+            </VariableList>
+          </FormulaContainer>
+
+          <h3 style={{ fontSize: '1.6rem', color: '#0d47a1', marginBottom: '20px', textAlign: 'center', marginTop: '40px' }}>
+            수질 지수(R) 산출 과정 및 산출식
+          </h3>
+          <ProcessFlow>
+            <span className="step">데이터 수집 및 전처리</span>
+            <span className="arrow">→</span>
+            <span className="step">Light GBM 모델링</span>
+            <span className="arrow">→</span>
+            <span className="step">수질 지수 예측</span>
+          </ProcessFlow>
+
+          <FormulaContainer>
+            <FormulaBox>R = wT * XT + wA * XA + wD * (1-XD)</FormulaBox>
+            <VariableList>
+              <VariableItem><strong>wT:</strong></VariableItem><VariableItem>탁도 가중치</VariableItem>
+              <VariableItem><strong>XT:</strong></VariableItem><VariableItem>탁도 예측 값</VariableItem>
+              <VariableItem><strong>wA:</strong></VariableItem><VariableItem>조류(Chl-a) 가중치</VariableItem>
+              <VariableItem><strong>XA:</strong></VariableItem><VariableItem>조류(Chl-a) 예측 값</VariableItem>
+              <VariableItem><strong>wD:</strong></VariableItem><VariableItem>용존산소(DO) 가중치</VariableItem>
+              <VariableItem><strong>XD:</strong></VariableItem><VariableItem>용존산소(DO) 예측 값</VariableItem>
+            </VariableList>
+          </FormulaContainer>
+
+          <ReferenceSection>
+            <h3>참고 문헌</h3>
+            <ReferenceItem>
+              Sasikala, D., et al., (2022). "Water Quality Prediction and Classificationbased on Linear Discriminant Analysis andLight Gradient Boosting Machine ClassifierApproach" Journal of Innovative Image Processing, 4(3), p147-156.
+            </ReferenceItem>
+            <ReferenceItem>
+              Alnageb, R., et al., (2022). "Machine Learning-based Water Potability Prediction" IEEE/ACS 19th International Conference on Computer Systems and Applications, p1-6
+            </ReferenceItem>
+            <ReferenceItem>
+              Randika K., et al., (2024). "Advancing water quality assessment and prediction using machine learning models, coupled with explainable artificial intelligence (XAI) techniques like shapley additive explanations (SHAP) for interpreting the black-box nature" Results in Engineering, 23, 102831
+            </ReferenceItem>
+          </ReferenceSection>
+
         </SectionWrapper>
 
         <SectionWrapper>
@@ -229,9 +390,25 @@ const MiriCPage: React.FC = () => {
               안전한 관광 도시로 발전시키는 데 이바지하고자 합니다.
             </HighlightText>
             <p>
-              또한, 시민들에게는 투명하고 신뢰할 수 있는 환경 정보를 제공하여
-              환경 인식 증진에 기여하고, 춘천시가 <strong>친환경 스마트 관광 도시</strong>로서의
-              위상을 확립할 수 있도록 최선을 다할 것입니다.
+              MIRI-C는 또한 다음 세 가지 주요 목표를 달성하기 위해 노력합니다:
+            </p>
+            <ul style={{ listStyleType: 'none', paddingLeft: '0', marginTop: '20px' }}>
+              <li style={{ marginBottom: '10px', fontSize: '1.1rem', color: '#333' }}>
+                <strong style={{ color: '#007bff' }}>1. 정확도 및 신뢰도 확보:</strong> 석사천, 퇴계천 등 지류 수질 데이터 확보를 통해
+                관광환경지수의 정확도와 신뢰도를 높입니다.
+              </li>
+              <li style={{ marginBottom: '10px', fontSize: '1.1rem', color: '#333' }}>
+                <strong style={{ color: '#007bff' }}>2. 의사결정 지원:</strong> 행사/축제 기획 및 춘천시의 주요 의사결정을 위한
+                정확한 환경 데이터를 제공하여 효율적인 정책 수립을 돕습니다.
+              </li>
+              <li style={{ marginBottom: '10px', fontSize: '1.1rem', color: '#333' }}>
+                <strong style={{ color: '#007bff' }}>3. 관광객 만족 향상:</strong> 투명하고 신뢰할 수 있는 환경 정보를 제공하여
+                관광객들이 안심하고 춘천을 방문할 수 있도록 하여 만족도를 높입니다.
+              </li>
+            </ul>
+            <p style={{ marginTop: '20px' }}>
+              궁극적으로 춘천시가 <strong>친환경 스마트 관광 도시</strong>로서의 위상을 확립하고,
+              지속 가능한 발전을 이루는 데 MIRI-C가 핵심적인 역할을 할 것입니다.
             </p>
           </ContentBlock>
         </SectionWrapper>
