@@ -169,7 +169,6 @@ const PageContainer = styled.div`
 const MapPanel = styled.div`
   flex: 2; /* 지도 공간을 더 넓게 */
   border-right: 1px solid #ccc;
-  padding: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -178,7 +177,7 @@ const MapPanel = styled.div`
 
 const ListPanel = styled.div`
   flex: 1; /* 목록 공간 */
-  padding: 20px;
+  padding-left: 20px;
   display: flex; /* Flexbox 컨테이너로 변경 */
   flex-direction: column; /* 세로 방향 정렬 */
   gap: 10px; /* 목록 항목 간 간격 */

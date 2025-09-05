@@ -17,6 +17,7 @@ const ContentWrapper = styled.div`
 const PageHeader = styled.div`
   text-align: center;
   margin-bottom: 40px;
+  margin-top: 20px;
   
   h1 {
     font-size: 2.5rem;
