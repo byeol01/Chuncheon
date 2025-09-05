@@ -17,7 +17,7 @@ interface ContactPost {
 const PageContainer = styled.div`
   min-height: 100vh;
   background: #F2F4F8;
-  padding: 80px 20px 20px 20px; /* 상단 패딩 추가 */
+  padding: 100px 20px 20px 20px; /* 상단 패딩 추가 */
   font-family: 'Noto Sans KR', sans-serif;
 `;
 

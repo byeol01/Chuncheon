@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 const PageContainer = styled.div`
-  padding-top: 80px; /* 내비게이션 바 높이만큼 패딩 추가 */
+  padding-top: 100px; /* 내비게이션 바 높이만큼 패딩 추가 */
   min-height: 100vh;
 `;
 

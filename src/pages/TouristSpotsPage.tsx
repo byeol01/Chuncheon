@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Modal from '../components/Modal';
+// import Modal from '../components/Modal'; // Modal 컴포넌트 제거
 import styled from 'styled-components'; // styled-components import
 
 interface TouristSpot {
@@ -61,45 +61,125 @@ const mockTouristSpots: TouristSpot[] = [
 ];
 
 const PageContainer = styled.div`
-  padding-top: 80px; /* 내비게이션 바 높이만큼 패딩 추가 */
+  padding-top: 100px; /* 내비게이션 바 높이만큼 패딩 추가 */
   min-height: 100vh;
   padding-left: 20px;
   padding-right: 20px;
+  display: flex; /* Flexbox 컨테이너로 변경 */
+  gap: 30px; /* 두 열 사이의 간격 */
+`;
+
+const LeftPanel = styled.div`
+  flex: 1; /* 남은 공간을 채우도록 */
+  max-width: 70%; /* 왼쪽 패널의 최대 너비 */
+  display: grid; /* 그리드 레이아웃 */
+  grid-template-columns: repeat(3, 1fr); /* 3개씩 보이도록 */
+  gap: 20px; /* 그리드 아이템 간의 간격 */
+  padding: 20px; /* 패널 내부 패딩 */
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+`;
+
+const RightPanel = styled.div`
+  flex: 1; /* 남은 공간을 채우도록 */
+  max-width: 30%; /* 오른쪽 패널의 최대 너비 */
+  padding: 20px; /* 패널 내부 패딩 */
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+`;
+
+const SpotItem = styled.div<{ $isActive: boolean }>`
+  border: 1px solid ${props => props.$isActive ? '#007bff' : '#ccc'};
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: #007bff;
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
+  }
+
+  img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+
+  h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #333;
+  }
+`;
+
+const DetailImage = styled.img`
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 20px;
+`;
+
+const DetailTitle = styled.h2`
+  font-size: 1.8rem;
+  color: #333;
+  margin-bottom: 15px;
+`;
+
+const DetailText = styled.p`
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 8px;
+  line-height: 1.4;
+
+  strong {
+    color: #333;
+  }
 `;
 
 const TouristSpotsPage: React.FC = () => {
-  const [selectedSpot, setSelectedSpot] = useState<TouristSpot | null>(null);
+  const [activeSpotId, setActiveSpotId] = useState<number>(mockTouristSpots[0].id);
+  const selectedSpot = mockTouristSpots.find(spot => spot.id === activeSpotId);
 
-  const handleImageClick = (spot: TouristSpot) => {
-    setSelectedSpot(spot);
-  };
-
-  const closeModal = () => {
-    setSelectedSpot(null);
+  const handleSpotClick = (id: number) => {
+    setActiveSpotId(id);
   };
 
   return (
-    <PageContainer> {/* PageContainer로 감싸기 */}
-      <h1>관광명소</h1>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '20px' }}>
+    <PageContainer>
+      <LeftPanel>
+        <h1>관광명소</h1>
         {mockTouristSpots.map((spot) => (
-          <div key={spot.id} style={{ border: '1px solid #ccc', padding: '10px', cursor: 'pointer' }} onClick={() => handleImageClick(spot)}>
-            <img src={spot.imageUrl} alt={spot.name} style={{ width: '100%', height: '180px', objectFit: 'cover' }} />
+          <SpotItem
+            key={spot.id}
+            $isActive={activeSpotId === spot.id}
+            onClick={() => handleSpotClick(spot.id)}
+          >
+            <img src={spot.imageUrl} alt={spot.name} />
             <h3>{spot.name}</h3>
-          </div>
+          </SpotItem>
         ))}
-      </div>
+      </LeftPanel>
 
-      {selectedSpot && (
-        <Modal onClose={closeModal}>
-          <h2>{selectedSpot.name}</h2>
-          <img src={selectedSpot.imageUrl} alt={selectedSpot.name} style={{ width: '100%', height: '250px', objectFit: 'cover', marginBottom: '10px' }} />
-          <p><strong>주소:</strong> {selectedSpot.address}</p>
-          <p><strong>설명:</strong> {selectedSpot.description}</p>
-          <p><strong>운영 시간:</strong> {selectedSpot.operatingHours}</p>
-          <p><strong>가격:</strong> {selectedSpot.price}</p>
-        </Modal>
-      )}
+      <RightPanel>
+        {selectedSpot ? (
+          <div>
+            <DetailTitle>{selectedSpot.name}</DetailTitle>
+            <DetailImage src={selectedSpot.imageUrl} alt={selectedSpot.name} />
+            <DetailText><strong>주소:</strong> {selectedSpot.address}</DetailText>
+            <DetailText><strong>설명:</strong> {selectedSpot.description}</DetailText>
+            <DetailText><strong>운영 시간:</strong> {selectedSpot.operatingHours}</DetailText>
+            <DetailText><strong>가격:</strong> {selectedSpot.price}</DetailText>
+          </div>
+        ) : (
+          <p>관광명소를 선택해주세요.</p>
+        )}
+      </RightPanel>
     </PageContainer>
   );
 };
