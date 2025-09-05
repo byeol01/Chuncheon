@@ -45,7 +45,7 @@ export const StatusText = styled.div<{ $level: number }>`
 `;
 
 export const Description = styled.div`
-  font-size: 1rem;
+  font-size: 20px;
   color: #666;
   margin-bottom: 20px;
   line-height: 1.5;
