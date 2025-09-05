@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom'; // useNavigate 임포트
 import Navigation from '../components/Navigation';
 import { StatusText, Description, getLevelText } from '../components/TourismIndex'; // TourismIndex에서 내보낸 컴포넌트 임포트
 import TourismParameters from '../components/TourismParameters'; 
@@ -225,6 +226,7 @@ const mockTourismDataTomorrow: TourismData = {
 const DashboardPage: React.FC = () => {
   const [isToday, setIsToday] = useState(true);
   const currentTourismData = isToday ? mockTourismDataToday : mockTourismDataTomorrow;
+  const navigate = useNavigate(); // useNavigate 훅 초기화
 
   const newsData = [
     {
@@ -242,8 +244,7 @@ const DashboardPage: React.FC = () => {
   ];
 
   const handleMoreNews = () => {
-    alert('춘천환경소식지 페이지로 이동합니다.');
-    // navigate('/news'); // React Router DOM 사용 시
+    navigate('/news'); // 춘천환경소식지 페이지로 이동
   };
 
   return (

@@ -79,7 +79,7 @@ const Container = styled.div`
 
 const Title = styled.h3`
   font-size: 1.5rem;
-  margin: 0 0 20px 0;
+  margin: 0 0 20px 12px; 
   color: #333;
   font-weight: 600;
 `;

@@ -20,6 +20,7 @@ const Title = styled.h2`
   margin: 0 0 20px 0;
   color: #333;
   font-weight: 600;
+  transform: translateY(-20px);
 `;
 
 const ParameterGrid = styled.div`
